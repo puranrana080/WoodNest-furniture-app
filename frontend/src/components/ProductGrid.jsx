@@ -1,6 +1,6 @@
-import ProductCard from "./ProductCard";
+// import ProductCard from "./ProductCard";
 
-const ProductGrid = ({ category }) => {
+// const ProductGrid = ({ category }) => {
 //   const products = category
 //     ? allProducts.filter(p => p.category === category)
 //     : allProducts;
@@ -12,7 +12,39 @@ const ProductGrid = ({ category }) => {
 //       ))}
 //     </div>
 //   );
-return (<h1>Product Grid</h1>)
+// };
+
+// export default ProductGrid
+
+import ProductCard from "./ProductCard";
+import { allProducts } from "../constants/products";
+
+const ProductGrid = ({ category }) => {
+
+  const formattedCategory = category
+    ? category.replace(/-/g, " ").toLowerCase()
+    : null;
+
+  const products = formattedCategory
+    ? allProducts.filter(
+        (p) => p.category.toLowerCase() === formattedCategory
+      )
+    : allProducts;
+
+  return (
+    <div className="
+      grid gap-6
+      grid-cols-1
+      sm:grid-cols-2
+      md:grid-cols-3
+      lg:grid-cols-4
+    ">
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} />
+      ))}
+    </div>
+  );
 };
 
-export default ProductGrid
+export default ProductGrid;
+

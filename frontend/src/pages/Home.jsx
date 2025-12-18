@@ -6,6 +6,7 @@ const Home = () => {
   return (
     <>
       <Carousel />
+      <h1 className="text-left p-5 font-bold text-3xl text-[#cd3535]">All Products</h1>
       <ProductGrid />
     </>
   );
