@@ -45,7 +45,7 @@ const AuthModal = ({ open, handleClose }) => {
             className="w-full border px-3 py-2 rounded-md"
           />
 
-          <button className="w-full bg-wood text-white py-2 rounded-md">
+          <button className="w-full bg-wood text-white py-2 rounded-md  bg-black ">
             {isLogin ? 'Login' : 'Register'}
           </button>
         </form>

@@ -4,6 +4,7 @@ import CategoryBar from './components/CategoryBar'
 import { Routes, Route } from "react-router-dom";
 import Home from './pages/Home'
 import CategoryPage from './pages/CategoryPage';
+import Footer from './components/Footer';
 
 const App = () => {
   return (
@@ -16,6 +17,8 @@ const App = () => {
       <Route path="/category/:categoryName" element={<CategoryPage/>} />
 
     </Routes>
+    <Footer/>
+
 
     
     </>

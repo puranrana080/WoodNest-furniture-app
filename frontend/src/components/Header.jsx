@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import wImage from "../assets/w1.png";
+import wImage from "../assets/w11.png";
 import AuthModal from "./AuthModal";
 import { Link } from "react-router-dom";
 
