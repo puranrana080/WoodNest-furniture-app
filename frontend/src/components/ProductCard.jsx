@@ -1,7 +1,10 @@
 import React from "react";
+import {useDispatch} from "react-redux"
 import { Link } from "react-router-dom";
+import {addToCart} from "../redux/cartSlice"
 
 const ProductCard = ({ product }) => {
+   const dispatch = useDispatch();
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition duration-300 border m-4">
       
@@ -29,7 +32,7 @@ const ProductCard = ({ product }) => {
             ₹{product.price}
           </span>
 
-          <button className="bg-black text-white px-3 py-1 text-sm rounded hover:bg-gray-800 transition">
+          <button onClick={()=>dispatch(addToCart({product}))} className="bg-black text-white px-3 py-1 text-sm rounded hover:bg-gray-800 transition">
             Add To Cart
           </button>
         </div>

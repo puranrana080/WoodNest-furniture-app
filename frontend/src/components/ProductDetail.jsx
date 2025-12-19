@@ -1,8 +1,18 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { allProducts } from "../constants/products";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const [qty,setQty] =useState(1);
+  const dispatch = useDispatch();
+
+  const handleAddToCart = ()=>{
+    dispatch(addToCart({product,qty}))
+    setQty(1);
+  }
 
   const product = allProducts.find(p => p.id === Number(id));
 
@@ -34,23 +44,22 @@ const ProductDetail = () => {
           </p>
 
           <p className="text-gray-600 mb-6">
-            Premium quality furniture crafted for modern homes. Durable,
-            stylish and comfortable for everyday use.
+            {product.description}
           </p>
 
           {/* QUANTITY */}
           <div className="flex items-center gap-4 mb-6">
             <span className="font-medium">Quantity</span>
             <div className="flex border rounded">
-              <button className="px-3 py-1 border-r">-</button>
-              <span className="px-4 py-1">1</span>
-              <button className="px-3 py-1 border-l">+</button>
+              <button onClick={()=>setQty((q)=>Math.max(1,q-1))} className="px-3 py-1 border-r">-</button>
+              <span className="px-4 py-1">{qty}</span>
+              <button onClick={()=>setQty((q)=>q+1)} className="px-3 py-1 border-l">+</button>
             </div>
           </div>
 
           {/* ADD TO CART */}
-          <button className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition">
-            Add to Cart
+          <button onClick={handleAddToCart} className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition">
+            Add {qty} to Cart
           </button>
         </div>
 
