@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/cartSlice";
+import { placeOrder } from "../redux/orderSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -17,6 +18,9 @@ const Checkout = () => {
   const { items } = useSelector((s) => s.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+//   const { items, total } = useSelector((s) => s.cart);
+  const { user, isLoggedIn } = useSelector((s) => s.auth);
 
   const [savedAddress, setSavedAddress] = useState(null);
   const [form, setForm] = useState(emptyAddr);
