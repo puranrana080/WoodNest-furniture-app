@@ -1,9 +1,28 @@
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../redux/cartSlice";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CartDrawer = ({ open, onClose }) => {
   const { items } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+const isLoggedIn = useSelector((s) => s.auth.isLoggedIn);
+
+const handleCheckout = () => {
+  if (!isLoggedIn) {
+    toast.error("Please login first to Place Order",{style: {
+      borderRadius: '10px',
+      background: '#333',
+      color: '#fff',
+    },});
+    navigate("/")
+    onClose()
+    return;
+  }
+  onClose();
+  navigate("/checkout");
+};
 
   const total = items.reduce(
     (sum, i) => sum + i.price * i.qty,
@@ -97,7 +116,7 @@ const CartDrawer = ({ open, onClose }) => {
             <span>Total</span>
             <span>₹{total}</span>
           </div>
-          {total?(<button className="w-full bg-[#cd3535] text-white py-2 rounded">
+          {total?(<button onClick={handleCheckout} className="w-full bg-[#cd3535] text-white py-2 rounded">
             Checkout
           </button>
 
