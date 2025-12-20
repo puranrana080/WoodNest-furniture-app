@@ -1,5 +1,11 @@
 import { Modal, Box } from '@mui/material'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { loginSuccess } from '../redux/authSlice'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+
+const API_BASE = "http://localhost:3000/api";
 
 const style = {
   position: 'absolute',
@@ -15,6 +21,38 @@ const style = {
 
 const AuthModal = ({ open, handleClose }) => {
   const [isLogin, setIsLogin] = useState(true)
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' })
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      if (isLogin) {
+        const res = await axios.post(`${API_BASE}/auth/login`, { email: formData.email, password: formData.password })
+        localStorage.setItem("token", res.data.token)
+        dispatch(loginSuccess(res.data.user))
+        toast.success('Logged in successfully')
+        handleClose()
+      } else {
+        await axios.post(`${API_BASE}/auth/register`, formData)
+        const res = await axios.post(`${API_BASE}/auth/login`, { email: formData.email,phone:formData.phone, password: formData.password })
+        localStorage.setItem("token", res.data.token)
+        dispatch(loginSuccess(res.data.user))
+        toast.success('Registered and logged in successfully')
+        handleClose()
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -24,29 +62,52 @@ const AuthModal = ({ open, handleClose }) => {
         </h2>
 
         {/* FORM */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full border px-3 py-2 rounded-md"
-            />
+            <>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md"
+                required
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md"
+                required
+              />
+            </>
           )}
 
           <input
             type="email"
+            name="email"
             placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
             className="w-full border px-3 py-2 rounded-md"
+            required
           />
 
           <input
             type="password"
+            name="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
             className="w-full border px-3 py-2 rounded-md"
+            required
           />
 
-          <button className="w-full bg-wood text-white py-2 rounded-md  bg-black ">
-            {isLogin ? 'Login' : 'Register'}
+          <button type="submit" disabled={loading} className="w-full bg-wood text-white py-2 rounded-md bg-black disabled:opacity-50">
+            {loading ? 'Processing...' : (isLogin ? 'Login' : 'Register')}
           </button>
         </form>
 

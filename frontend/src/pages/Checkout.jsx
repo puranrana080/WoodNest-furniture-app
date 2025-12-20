@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/cartSlice";
-import { placeOrder } from "../redux/orderSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import axios from "axios";
+
+const API_BASE = "http://localhost:3000/api";
 
 const emptyAddr = {
   name: "",
@@ -45,7 +47,7 @@ const Checkout = () => {
     0
   );
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     const finalAddr = useNew ? form : savedAddress;
 
     if (
@@ -61,11 +63,28 @@ const Checkout = () => {
 
     localStorage.setItem("address", JSON.stringify(finalAddr));
 
-    // later → API call to create order
-    dispatch(clearCart());
-    toast.success("Order placed successfully 🎉");
+    const orderData = {
+      items: items.map(i => ({ product: i._id, quantity: i.qty, price: i.price })),
+      total,
+      address: finalAddr,
+    };
 
-    navigate("/");
+    console.log("Order Data:", orderData); // Debug log
+
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Token:", token); // Debug log
+      const res = await axios.post(`${API_BASE}/orders`, orderData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Response:", res.data); // Debug log
+      dispatch(clearCart());
+      toast.success("Order placed successfully 🎉");
+      navigate("/");
+    } catch (err) {
+      console.error("Error:", err.response?.data || err.message);
+      toast.error(err.response?.data?.message || "Failed to place order");
+    }
   };
 
   return (

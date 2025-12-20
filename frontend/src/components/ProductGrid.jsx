@@ -17,19 +17,33 @@
 // export default ProductGrid
 
 import ProductCard from "./ProductCard";
-import { allProducts } from "../constants/products";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+const API_BASE = "http://localhost:3000/api";
 
 const ProductGrid = ({ category }) => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const formattedCategory = category
-    ? category.replace(/-/g, " ").toLowerCase()
-    : null;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const url = category ? `${API_BASE}/products/category/${category}` : `${API_BASE}/products`;
+        const res = await axios.get(url);
+        setProducts(res.data);
+      } catch (err) {
+        setError(err.response?.data?.error || "Failed to fetch products");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [category]);
 
-  const products = formattedCategory
-    ? allProducts.filter(
-        (p) => p.category.toLowerCase() === formattedCategory
-      )
-    : allProducts;
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="
@@ -40,7 +54,7 @@ const ProductGrid = ({ category }) => {
       lg:grid-cols-4
     ">
       {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
+        <ProductCard key={p._id} product={p} />
       ))}
     </div>
   );

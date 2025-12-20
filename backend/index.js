@@ -9,7 +9,10 @@ const orderRoutes = require("./src/routes/orderRoutes")
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow frontend origin
+  credentials: true
+}));
 app.use(express.json());
 
 app.get("/health", (req, res) => {
@@ -22,7 +25,7 @@ app.use("/api/orders",orderRoutes)
 
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ;
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
   try {

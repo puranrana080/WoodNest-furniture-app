@@ -60,7 +60,7 @@ const handleCheckout = () => {
           ) : (
             items.map((item) => (
               <div
-                key={item.id}
+                key={item._id}
                 className="flex gap-3 border-b pb-3"
               >
                 <img
@@ -97,7 +97,7 @@ const handleCheckout = () => {
 
                     <button
                       onClick={() =>
-                        dispatch(removeFromCart(item.id))
+                        dispatch(removeFromCart(item._id))
                       }
                       className="ml-auto text-red-500 text-sm"
                     >

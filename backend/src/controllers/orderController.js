@@ -3,7 +3,7 @@ const Order = require("../models/Order");
 //place order
 exports.placeOrder = async (req, res) => {
   try {
-    const { items, address, totalAmount } = req.body;
+    const { items, total, address } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "No items in order" });
@@ -24,7 +24,7 @@ exports.placeOrder = async (req, res) => {
       user: req.user.id,
       items,
       address,
-      totalAmount,
+      totalAmount: total,
       paymentMethod: "COD",
     });
 

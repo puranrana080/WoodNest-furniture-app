@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
     <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition duration-300 border m-4">
       
       {/* IMAGE */}
-      <Link to={`/product/${product.id}`} className="w-full h-64  bg-gray-100 flex items-center justify-center overflow-hidden rounded-t-lg">
+      <Link to={`/product/${product._id}`} className="w-full h-64  bg-gray-100 flex items-center justify-center overflow-hidden rounded-t-lg">
         <img
           src={product.image}
           alt={product.name}

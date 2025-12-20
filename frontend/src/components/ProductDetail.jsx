@@ -1,24 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { allProducts } from "../constants/products";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
+import axios from "axios";
+
+const API_BASE = "http://localhost:3000/api";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const [qty,setQty] =useState(1);
+  const [qty, setQty] = useState(1);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
 
-  const handleAddToCart = ()=>{
-    dispatch(addToCart({product,qty}))
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/products/${id}`);
+        setProduct(res.data);
+      } catch (err) {
+        setError(err.response?.data?.error || "Failed to fetch product");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ product, qty }));
     setQty(1);
-  }
+  };
 
-  const product = allProducts.find(p => p.id === Number(id));
-
-  if (!product) {
-    return <div className="text-center py-20">Product not found</div>;
-  }
+  if (loading) return <div className="text-center py-20">Loading...</div>;
+  if (error) return <div className="text-center py-20">Error: {error}</div>;
+  if (!product) return <div className="text-center py-20">Product not found</div>;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
