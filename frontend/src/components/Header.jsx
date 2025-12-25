@@ -3,13 +3,17 @@ import wImage from "../assets/w11.png";
 import AuthModal from "./AuthModal";
 import CartDrawer from "./CartDrawer";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setSearchQuery, clearSearch } from "../redux/searchSlice";
+import { clearCart } from "../redux/cartSlice";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [openCart, setOpenCart] = useState(false);
 
   const { isLoggedIn, user } = useSelector((s) => s.auth);
+  const { query } = useSelector((s) => s.search);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const items = useSelector((state) => state.cart.items);
@@ -32,12 +36,11 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-20 ">
             {/* LOGO */}
-            <Link to="/">
+            <Link to="/" onClick={() => dispatch(clearSearch())}>
               <img
                 src={wImage}
                 alt="WoodNest Logo"
                 className="h-20 w-auto"
-                to="/"
               />
             </Link>
 
@@ -46,6 +49,8 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search for furniture..."
+                value={query}
+                onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-black"
               />
             </div>

@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
+import { clearCart } from "../redux/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -16,6 +17,7 @@ const Profile = () => {
 
       <button
         onClick={() => {
+          dispatch(clearCart());
           dispatch(logout());
           navigate("/");
         }}

@@ -36,16 +36,18 @@ const AuthModal = ({ open, handleClose }) => {
       if (isLogin) {
         const res = await axios.post(`${API_BASE}/auth/login`, { email: formData.email, password: formData.password })
         localStorage.setItem("token", res.data.token)
-        dispatch(loginSuccess(res.data.user))
+        dispatch(loginSuccess({ user: res.data.user, latestAddress: res.data.latestAddress }))
         toast.success('Logged in successfully')
         handleClose()
+        setFormData({ name: '', email: '', phone: '', password: '' })
       } else {
         await axios.post(`${API_BASE}/auth/register`, formData)
-        const res = await axios.post(`${API_BASE}/auth/login`, { email: formData.email,phone:formData.phone, password: formData.password })
+        const res = await axios.post(`${API_BASE}/auth/login`, { email: formData.email, password: formData.password })
         localStorage.setItem("token", res.data.token)
-        dispatch(loginSuccess(res.data.user))
+        dispatch(loginSuccess({ user: res.data.user, latestAddress: res.data.latestAddress }))
         toast.success('Registered and logged in successfully')
         handleClose()
+        setFormData({ name: '', email: '', phone: '', password: '' })
       }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Something went wrong')

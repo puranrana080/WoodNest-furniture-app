@@ -22,21 +22,19 @@ const Checkout = () => {
   const dispatch = useDispatch();
 
 //   const { items, total } = useSelector((s) => s.cart);
-  const { user, isLoggedIn } = useSelector((s) => s.auth);
+  const { user, isLoggedIn, latestAddress } = useSelector((s) => s.auth);
 
   const [savedAddress, setSavedAddress] = useState(null);
   const [form, setForm] = useState(emptyAddr);
   const [useNew, setUseNew] = useState(true);
 
   useEffect(() => {
-    const addr = localStorage.getItem("address");
-    if (addr) {
-      const parsed = JSON.parse(addr);
-      setSavedAddress(parsed);
-      setForm(parsed);
+    if (latestAddress) {
+      setSavedAddress(latestAddress);
+      setForm(latestAddress);
       setUseNew(false);
     }
-  }, []);
+  }, [latestAddress]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

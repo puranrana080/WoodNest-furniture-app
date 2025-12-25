@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const User = require("../models/User");
 
 //place order
 exports.placeOrder = async (req, res) => {
@@ -27,6 +28,9 @@ exports.placeOrder = async (req, res) => {
       totalAmount: total,
       paymentMethod: "COD",
     });
+
+    // Save address to user's addresses
+    await User.findByIdAndUpdate(req.user.id, { $push: { addresses: address } });
 
     res.status(201).json(order);
   } catch (err) {

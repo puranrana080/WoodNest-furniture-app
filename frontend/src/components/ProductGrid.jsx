@@ -1,28 +1,10 @@
-// import ProductCard from "./ProductCard";
-
-// const ProductGrid = ({ category }) => {
-//   const products = category
-//     ? allProducts.filter(p => p.category === category)
-//     : allProducts;
-
-//   return (
-//     <div className="grid grid-cols-4 gap-6">
-//       {products.map(p => (
-//         <ProductCard key={p.id} product={p} />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default ProductGrid
-
 import ProductCard from "./ProductCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 const API_BASE = "http://localhost:3000/api";
 
-const ProductGrid = ({ category }) => {
+const ProductGrid = ({ category, search }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,6 +24,13 @@ const ProductGrid = ({ category }) => {
     fetchProducts();
   }, [category]);
 
+  const filteredProducts = search
+    ? products.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.category.toLowerCase().includes(search.toLowerCase())
+      )
+    : products;
+
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -53,7 +42,7 @@ const ProductGrid = ({ category }) => {
       md:grid-cols-3
       lg:grid-cols-4
     ">
-      {products.map((p) => (
+      {filteredProducts.map((p) => (
         <ProductCard key={p._id} product={p} />
       ))}
     </div>
