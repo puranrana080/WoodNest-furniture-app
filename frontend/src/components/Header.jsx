@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import wImage from "../assets/w11.png";
 import AuthModal from "./AuthModal";
 import CartDrawer from "./CartDrawer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setSearchQuery, clearSearch } from "../redux/searchSlice";
 import { clearCart } from "../redux/cartSlice";
@@ -15,6 +15,7 @@ const Header = () => {
   const { query } = useSelector((s) => s.search);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const items = useSelector((state) => state.cart.items);
   const totalQty = items.reduce((sum, i) => sum + i.qty, 0);
@@ -50,7 +51,12 @@ const Header = () => {
                 type="text"
                 placeholder="Search for furniture..."
                 value={query}
-                onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+                onChange={(e) => {
+                  if (location.pathname.startsWith('/category') && e.target.value.trim()) {
+                    navigate('/');
+                  }
+                  dispatch(setSearchQuery(e.target.value));
+                }}
                 className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-black"
               />
             </div>
